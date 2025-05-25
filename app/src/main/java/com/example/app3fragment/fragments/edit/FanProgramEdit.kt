@@ -37,7 +37,7 @@ class FanProgramEdit : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = inflater.inflate(R.layout.fragment_program_edit, container, false)
+        val binding = inflater.inflate(R.layout.fragment_fan_edit, container, false)
         this.programEditViewModel = ViewModelProvider(this)[ProgramEditViewModel::class.java]
         return binding
     }

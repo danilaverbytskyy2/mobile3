@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        val fragment = FragmentLabel.newInstance("Labels")
+        val fragment = FragmentLabel.newInstance("Лэйблы")
         this.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).commit()
     }
 }

@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
                 android:layout_marginTop="15dp"
-                android:text="@string/Program"
+                android:text="Фанат"
                 android:textSize="24sp" />
 
         </FrameLayout>
@@ -51,7 +51,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_weight="1"
-                            android:text="@string/Fl_Name"
+                            android:text="Имя"
                             android:textSize="24sp" />
 
                         <EditText
@@ -79,7 +79,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_weight="1"
-                            android:text="@string/Fl_phone"
+                            android:text="Телфон"
                             android:textSize="24sp" />
 
                         <EditText
@@ -107,7 +107,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_weight="1"
-                            android:text="@string/Fl_Desc"
+                            android:text="Описание"
                             android:textSize="24sp" />
 
                         <EditText
@@ -133,7 +133,7 @@
                         android:layout_weight="1"
                         android:width="150dp"
                         android:backgroundTint="#DB7878"
-                        android:text="@string/Cancel"
+                        android:text="Закрыть"
                         android:textColorLink="#FFA7A7" />
 
                     <Button
@@ -143,8 +143,9 @@
                         android:layout_gravity="center"
                         android:layout_marginRight="100dp"
                         android:width="150dp"
-                        android:backgroundTint="#727BC7"
-                        android:text="@string/Entry" />
+                        android:backgroundTint="#8BC34A"
+                        android:text="Добавить"
+                        android:textColorLink="#890606" />
 
                 </FrameLayout>
             </LinearLayout>

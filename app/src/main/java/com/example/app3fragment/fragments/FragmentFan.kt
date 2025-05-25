@@ -59,7 +59,7 @@ class FragmentProgram : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = inflater.inflate(R.layout.fragment_programs, container, false)
+        val binding = inflater.inflate(R.layout.fragment_fans, container, false)
         val factory = FanViewModelFactory(this.companyId)
         this.fanViewModel = ViewModelProvider(this, factory)[FanViewModel::class.java]
         return binding

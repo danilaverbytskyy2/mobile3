@@ -40,7 +40,7 @@ class FragmentLabel : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = inflater.inflate(R.layout.fragment_sectors, container, false)
+        val binding = inflater.inflate(R.layout.fragment_labels, container, false)
         this.labelViewModel = ViewModelProvider(this)[LabelViewModel::class.java]
         return binding
     }
@@ -111,7 +111,7 @@ class FragmentLabel : Fragment() {
                     val selected = adapter.selectedPosition
                     if (selected in adapter.labels.indices) {
                         val selectedSectorId = adapter.labels[selected].id
-                        val fragment = FragmentArtist.newInstance(adapter.labels[selected].name + " - Companies", selectedSectorId)
+                        val fragment = FragmentArtist.newInstance(adapter.labels[selected].name + " - Артисты", selectedSectorId)
                         activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).addToBackStack(null).commit()
                     } else {
                         Toast.makeText(context, "Choose an item", Toast.LENGTH_SHORT).show()

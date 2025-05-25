@@ -51,7 +51,7 @@ class FragmentArtist : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = inflater.inflate(R.layout.fragment_companies, container, false)
+        val binding = inflater.inflate(R.layout.fragment_artists, container, false)
         val factory = ArtistViewModelFactory(this.sectorId)
         this.artistViewModel = ViewModelProvider(this, factory)[ArtistViewModel::class.java]
         return binding
@@ -124,7 +124,7 @@ class FragmentArtist : Fragment() {
                     val selected = adapter.selectedPosition
                     if (selected in adapter.companies.indices) {
                         val selectedCompanyId = adapter.companies[selected].id
-                        val fragment = FragmentProgram.newInstance(adapter.companies[selected].name + " - Programs", selectedCompanyId)
+                        val fragment = FragmentProgram.newInstance(adapter.companies[selected].name + " - Фанаты", selectedCompanyId)
                         activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).addToBackStack(null).commit()
                     } else {
                         Toast.makeText(context, "Choose an item", Toast.LENGTH_SHORT).show()
