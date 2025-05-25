@@ -2,16 +2,16 @@ package com.example.app3fragment.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.app3fragment.database.company.Company
-import com.example.app3fragment.database.company.CompanyDAO
-import com.example.app3fragment.database.program.Program
-import com.example.app3fragment.database.program.ProgramDAO
-import com.example.app3fragment.database.sector.Sector
-import com.example.app3fragment.database.sector.SectorDAO
+import com.example.app3fragment.database.artist.Artist
+import com.example.app3fragment.database.artist.ArtistDAO
+import com.example.app3fragment.database.fan.Fan
+import com.example.app3fragment.database.fan.FanDAO
+import com.example.app3fragment.database.label.Label
+import com.example.app3fragment.database.label.LabelDAO
 
-@Database(entities = [Sector::class, Company::class, Program::class], version = 3, exportSchema = false)
+@Database(entities = [Label::class, Artist::class, Fan::class], version = 4, exportSchema = false)
 abstract class DataBaseManager : RoomDatabase() {
-    abstract fun sectorDao(): SectorDAO
-    abstract fun companyDao(): CompanyDAO
-    abstract fun programDao(): ProgramDAO
+    abstract fun labelDao(): LabelDAO
+    abstract fun companyDao(): ArtistDAO
+    abstract fun programDao(): FanDAO
 }

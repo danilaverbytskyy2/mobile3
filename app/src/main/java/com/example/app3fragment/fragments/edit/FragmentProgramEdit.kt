@@ -8,13 +8,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.app3fragment.R
-import com.example.app3fragment.database.program.Program
-import com.example.app3fragment.database.program.ProgramUpdateRequest
+import com.example.app3fragment.database.fan.Fan
+import com.example.app3fragment.database.fan.FanUpdateRequest
 import com.example.app3fragment.retro.RetroBase
 import com.example.app3fragment.viewmodels.edit.ProgramEditViewModel
 import kotlinx.coroutines.Dispatchers
@@ -94,7 +93,7 @@ class FragmentProgramEdit : Fragment() {
             }
 
             if (editId > 0) {
-                this.programEditViewModel.updateProgram(ProgramUpdateRequest(
+                this.programEditViewModel.updateProgram(FanUpdateRequest(
                     id = editId,
                     name = name,
                     description = descInput.text.toString(),
@@ -102,11 +101,11 @@ class FragmentProgramEdit : Fragment() {
                 )
                 )
             } else {
-                this.programEditViewModel.addProgram(Program(
+                this.programEditViewModel.addProgram(Fan(
                     name = name,
                     description = descInput.text.toString(),
                     developerPhone = phoneInput.text.toString(),
-                    companyId = companyId
+                    artistId = companyId
                 )
                 )
             }

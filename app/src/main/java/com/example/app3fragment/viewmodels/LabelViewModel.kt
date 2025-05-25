@@ -5,16 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app3fragment.database.company.Company
-import com.example.app3fragment.database.company.CompanyRenameRequest
-import com.example.app3fragment.database.sector.Sector
-import com.example.app3fragment.database.sector.SectorRenameRequest
+import com.example.app3fragment.database.label.Label
+import com.example.app3fragment.database.label.LebelRenameRequest
 import com.example.app3fragment.retro.RetroBase
 import kotlinx.coroutines.launch
 
-class CompanyViewModel(private val sectorId: Int) : ViewModel() {
-    private val _companies = MutableLiveData<List<Company>>()
-    val companies: LiveData<List<Company>> = _companies
+class LabelViewModel() : ViewModel() {
+    private val _labels = MutableLiveData<List<Label>>()
+    val labels: LiveData<List<Label>> = _labels
 
     init {
         viewModelScope.launch {
@@ -24,17 +22,17 @@ class CompanyViewModel(private val sectorId: Int) : ViewModel() {
 
     private suspend fun loadDataFromServer() {
         try {
-            val serverCompanies = RetroBase.RFIT_COMPANY.getCompaniesBySector(this.sectorId)
-            _companies.postValue(serverCompanies)
+            val serverLabels = RetroBase.RFIT_SECTOR.getLabels()
+            _labels.postValue(serverLabels)
         } catch (e: Exception) {
             e.message?.let { Log.e("Err", it) }
         }
     }
 
-    fun renameCompany(company: Company, newName: String) {
+    fun renameLabel(label: Label, newName: String) {
         viewModelScope.launch {
             try {
-                val response = RetroBase.RFIT_COMPANY.renameCompany(CompanyRenameRequest(company.id, newName))
+                val response = RetroBase.RFIT_SECTOR.renameLabel(LebelRenameRequest(label.id, newName))
                 if (response.isSuccessful) {
                     loadDataFromServer()
                 }
@@ -44,10 +42,10 @@ class CompanyViewModel(private val sectorId: Int) : ViewModel() {
         }
     }
 
-    fun addCompany(company: Company) {
+    fun addLabel(label: Label) {
         viewModelScope.launch {
             try {
-                val response = RetroBase.RFIT_COMPANY.addCompany(company)
+                val response = RetroBase.RFIT_SECTOR.addLabel(label)
                 if (response.isSuccessful) {
                     loadDataFromServer()
                 }
@@ -57,10 +55,10 @@ class CompanyViewModel(private val sectorId: Int) : ViewModel() {
         }
     }
 
-    fun removeCompany(company: Company) {
+    fun removeLabel(label: Label) {
         viewModelScope.launch {
             try {
-                val response = RetroBase.RFIT_COMPANY.removeCompany(company)
+                val response = RetroBase.RFIT_SECTOR.removeLabel(label)
                 if (response.isSuccessful) {
                     loadDataFromServer()
                 }

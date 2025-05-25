@@ -10,87 +10,74 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app3fragment.R
-import com.example.app3fragment.database.company.Company
-import com.example.app3fragment.viewmodels.CompanyViewModel
+import com.example.app3fragment.database.label.Label
+import com.example.app3fragment.viewmodels.LabelViewModel
 
 private const val ARG_TITLE = "ARG_TITLE"
-private const val ARG_SECTOR_ID = "ARG_SECTOR_ID"
 
-class CompanyViewModelFactory(private val sectorId: Int) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(CompanyViewModel::class.java)) {
-            return CompanyViewModel(sectorId) as T
-        }
-        throw IllegalArgumentException("Error")
-    }
-}
-
-class FragmentCompany : Fragment() {
-    private lateinit var adapter: CompanyAdapter;
+class FragmentLabel : Fragment() {
+    private lateinit var adapter: LabelAdapter;
     private var title: String? = null
-    private var sectorId: Int = -1
-    private lateinit var companyViewModel: CompanyViewModel
+    private lateinit var labelViewModel: LabelViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             title = it.getString(ARG_TITLE)
-            sectorId = it.getInt(ARG_SECTOR_ID)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = inflater.inflate(R.layout.fragment_companies, container, false)
-        val factory = CompanyViewModelFactory(this.sectorId)
-        this.companyViewModel = ViewModelProvider(this, factory)[CompanyViewModel::class.java]
+        val binding = inflater.inflate(R.layout.fragment_sectors, container, false)
+        this.labelViewModel = ViewModelProvider(this)[LabelViewModel::class.java]
         return binding
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbarCompanies)
-        val toolbarTitle = view.findViewById<TextView>(R.id.menuCompaniesTitle)
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbarSectors)
+        val toolbarTitle = view.findViewById<TextView>(R.id.menuSectorsTitle)
         toolbar.inflateMenu(R.menu.main_menu)
         val activity = this.requireActivity() as AppCompatActivity
         activity.setSupportActionBar(toolbar)
         toolbarTitle.text = this.title
 
-        this.adapter = CompanyAdapter()
-        this.requireActivity().addMenuProvider(LocalMenuProvider(this.adapter, activity, this.requireContext(), this.companyViewModel, this.sectorId), this.viewLifecycleOwner)
+        this.adapter = LabelAdapter()
+        this.requireActivity().addMenuProvider(LocalMenuProvider(this.adapter, activity, this.requireContext(), this.labelViewModel), this.viewLifecycleOwner)
 
         //============================================
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.companiesView)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.sectorsView)
         recyclerView?.adapter = this.adapter
         recyclerView?.layoutManager = LinearLayoutManager(this.requireContext())
-        this.companyViewModel.companies.observe(viewLifecycleOwner) { companies ->
-            this.adapter.submitList(companies)
+        this.labelViewModel.labels.observe(viewLifecycleOwner) { sectors ->
+            this.adapter.submitList(sectors)
         }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(menuTitle: String, sectorId: Int) =
-            FragmentCompany().apply {
+        fun newInstance(menuTitle: String) =
+            FragmentLabel().apply {
                 arguments = Bundle().apply {
                     putString(ARG_TITLE, menuTitle)
-                    putInt(ARG_SECTOR_ID, sectorId)
                 }
             }
     }
 
-    class LocalMenuProvider(private val adapter: CompanyAdapter, private val activity: AppCompatActivity, private val context: Context, private val companyViewModel: CompanyViewModel, private val sectorId: Int) : MenuProvider {
+    class LocalMenuProvider(private val adapter: LabelAdapter, private val activity: AppCompatActivity, private val context: Context, private val labelViewModel: LabelViewModel) : MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
             menuInflater.inflate(R.menu.main_menu, menu)
             val entryItem = menu.findItem(R.id.menu_phone)
@@ -100,31 +87,31 @@ class FragmentCompany : Fragment() {
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
             return when (menuItem.itemId) {
                 R.id.menu_add -> {
-                    FragmentSector.DialogHelper.showNameInDialog(this.context) { name ->
-                        val newCompany = Company(name = name, sectorId = sectorId)
-                        companyViewModel.addCompany(newCompany)
+                    DialogHelper.showNameInDialog(this.context) { name ->
+                        val newLabel = Label(name = name)
+                        labelViewModel.addLabel(newLabel)
                     }
                     true
                 }
                 R.id.menu_edit -> {
-                    FragmentSector.DialogHelper.showNameInDialog(this.context) { name ->
-                        if (this.adapter.selectedPosition >= 0 && this.adapter.selectedPosition < this.adapter.companies.size) {
-                            companyViewModel.renameCompany(this.adapter.companies[this.adapter.selectedPosition], name)
+                    DialogHelper.showNameInDialog(this.context) { name ->
+                        if (this.adapter.selectedPosition >= 0 && this.adapter.selectedPosition < this.adapter.labels.size) {
+                            labelViewModel.renameLabel(this.adapter.labels[this.adapter.selectedPosition], name)
                         }
                     }
                     true
                 }
                 R.id.menu_delete -> {
-                    if (this.adapter.selectedPosition >= 0 && this.adapter.selectedPosition < this.adapter.companies.size) {
-                        companyViewModel.removeCompany(this.adapter.companies[this.adapter.selectedPosition])
+                    if (this.adapter.selectedPosition >= 0 && this.adapter.selectedPosition < this.adapter.labels.size) {
+                        labelViewModel.removeLabel(this.adapter.labels[this.adapter.selectedPosition])
                     }
                     true
                 }
                 R.id.menu_entry -> {
                     val selected = adapter.selectedPosition
-                    if (selected in adapter.companies.indices) {
-                        val selectedCompanyId = adapter.companies[selected].id
-                        val fragment = FragmentProgram.newInstance(adapter.companies[selected].name + " - Programs", selectedCompanyId)
+                    if (selected in adapter.labels.indices) {
+                        val selectedSectorId = adapter.labels[selected].id
+                        val fragment = FragmentArtist.newInstance(adapter.labels[selected].name + " - Companies", selectedSectorId)
                         activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).addToBackStack(null).commit()
                     } else {
                         Toast.makeText(context, "Choose an item", Toast.LENGTH_SHORT).show()
@@ -136,17 +123,34 @@ class FragmentCompany : Fragment() {
         }
     }
 
-    class CompanyAdapter : RecyclerView.Adapter<CompanyAdapter.CompanyViewHolder>() {
-        var companies = emptyList<Company>()
+    object DialogHelper {
+        fun showNameInDialog(context: Context, onConfirm: (String) -> Unit) {
+            val input = EditText(context).apply {
+                hint = "Name"
+            }
+
+            AlertDialog.Builder(context).setTitle("Data").setView(input).setPositiveButton("Enter") { _, _ ->
+                val name = input.text.toString()
+                if (name.isNotBlank()) {
+                    onConfirm(name)
+                } else {
+                    Toast.makeText(context, "It must not be empty", Toast.LENGTH_SHORT).show()
+                }
+            }.setNegativeButton("Cancel", null).show()
+        }
+    }
+
+    class LabelAdapter() : RecyclerView.Adapter<LabelAdapter.SectorViewHolder>() {
+        var labels = emptyList<Label>()
         var selectedPosition = -1
 
         @SuppressLint("NotifyDataSetChanged")
-        fun submitList(newList: List<Company>) {
-            this.companies = newList
+        fun submitList(newList: List<Label>) {
+            this.labels = newList
             notifyDataSetChanged()
         }
 
-        inner class CompanyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        inner class SectorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val nameText: TextView = itemView.findViewById(R.id.sectorName)
 
             init {
@@ -159,15 +163,15 @@ class FragmentCompany : Fragment() {
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompanyViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectorViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_viewlist, parent, false)
-            return CompanyViewHolder(view)
+            return SectorViewHolder(view)
         }
 
         @SuppressLint("SetTextI18n")
-        override fun onBindViewHolder(holder: CompanyViewHolder, position: Int) {
-            val company = this.companies[position]
-            holder.nameText.text = "${company.id} - ${company.name}"
+        override fun onBindViewHolder(holder: SectorViewHolder, position: Int) {
+            val label = this.labels[position]
+            holder.nameText.text = "${label.id} - ${label.name}"
 
             holder.itemView.setBackgroundColor(
                 if (position == selectedPosition) {
@@ -178,6 +182,6 @@ class FragmentCompany : Fragment() {
             )
         }
 
-        override fun getItemCount() = this.companies.size
+        override fun getItemCount() = this.labels.size
     }
 }

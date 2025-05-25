@@ -15,11 +15,11 @@ class App3 : Application() {
     override fun onCreate() {
         super.onCreate()
         val scope = CoroutineScope(Dispatchers.IO)
-        this.database = Room.databaseBuilder(this.applicationContext, DataBaseManager::class.java, "app_db2.db").build()
-        Server.KtorServerManager.start(scope, this.database.sectorDao(), this.database.companyDao(), this.database.programDao())
+        this.database = Room.databaseBuilder(this.applicationContext, DataBaseManager::class.java, "app_db5.db").build()
+        Server.KtorServerManager.start(scope, this.database.labelDao(), this.database.companyDao(), this.database.programDao())
 
         val context: Context = this.applicationContext
-        val dbFile = context.getDatabasePath("app_db2.db")
+        val dbFile = context.getDatabasePath("app_db5.db")
         Log.d("Database Path", dbFile.absolutePath)
     }
 

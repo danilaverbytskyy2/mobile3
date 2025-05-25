@@ -5,16 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app3fragment.database.program.Program
-import com.example.app3fragment.database.program.ProgramUpdateRequest
-import com.example.app3fragment.database.sector.Sector
-import com.example.app3fragment.database.sector.SectorRenameRequest
+import com.example.app3fragment.database.fan.Fan
 import com.example.app3fragment.retro.RetroBase
 import kotlinx.coroutines.launch
 
-class ProgramViewModel(private val companyId: Int) : ViewModel() {
-    private val _programs = MutableLiveData<List<Program>>()
-    val programs: LiveData<List<Program>> = _programs
+class FanViewModel(private val companyId: Int) : ViewModel() {
+    private val _programs = MutableLiveData<List<Fan>>()
+    val programs: LiveData<List<Fan>> = _programs
 
     public fun fetch() {
         viewModelScope.launch {
@@ -24,17 +21,17 @@ class ProgramViewModel(private val companyId: Int) : ViewModel() {
 
     private suspend fun loadDataFromServer() {
         try {
-            val serverPrograms = RetroBase.RFIT_PROGRAM.getProgramsByCompany(companyId)
+            val serverPrograms = RetroBase.RFIT_PROGRAM.getFansByArtist(companyId)
             _programs.postValue(serverPrograms)
         } catch (e: Exception) {
             e.message?.let { Log.e("Err", it) }
         }
     }
 
-    fun removeProgram(program: Program) {
+    fun removeFan(fan: Fan) {
         viewModelScope.launch {
             try {
-                val response = RetroBase.RFIT_PROGRAM.removeProgram(program)
+                val response = RetroBase.RFIT_PROGRAM.removeFan(fan)
                 if (response.isSuccessful) {
                     loadDataFromServer()
                 }

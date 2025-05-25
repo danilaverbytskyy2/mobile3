@@ -7,16 +7,16 @@ class RetroBase {
     companion object {
         private const val ADR = "http://localhost:8080/"
 
-        val RFIT_SECTOR: SectorRetro by lazy {
-            Retrofit.Builder().baseUrl(ADR).addConverterFactory(JacksonConverterFactory.create()).build().create(SectorRetro::class.java)
+        val RFIT_SECTOR: LabelRetro by lazy {
+            Retrofit.Builder().baseUrl(ADR).addConverterFactory(JacksonConverterFactory.create()).build().create(LabelRetro::class.java)
         }
 
-        val RFIT_COMPANY: CompanyRetro by lazy {
-            Retrofit.Builder().baseUrl(ADR).addConverterFactory(JacksonConverterFactory.create()).build().create(CompanyRetro::class.java)
+        val RFIT_COMPANY: ArtistRetro by lazy {
+            Retrofit.Builder().baseUrl(ADR).addConverterFactory(JacksonConverterFactory.create()).build().create(ArtistRetro::class.java)
         }
 
-        val RFIT_PROGRAM: ProgramRetro by lazy {
-            Retrofit.Builder().baseUrl(ADR).addConverterFactory(JacksonConverterFactory.create()).build().create(ProgramRetro::class.java)
+        val RFIT_PROGRAM: FanRetro by lazy {
+            Retrofit.Builder().baseUrl(ADR).addConverterFactory(JacksonConverterFactory.create()).build().create(FanRetro::class.java)
         }
     }
 }

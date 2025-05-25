@@ -1,21 +1,21 @@
-package com.example.app3fragment.database.company
+package com.example.app3fragment.database.artist
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.example.app3fragment.database.sector.Sector
+import com.example.app3fragment.database.label.Label
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-@Entity(tableName = "companies",
+@Entity(tableName = "artists",
     foreignKeys = [ForeignKey(
-        entity = Sector::class,
+        entity = Label::class,
         parentColumns = ["id"],
-        childColumns = ["sectorId"],
+        childColumns = ["labelId"],
         onDelete = ForeignKey.CASCADE)
     ])
-data class Company @JsonCreator constructor(
+data class Artist @JsonCreator constructor(
     @JsonProperty("id") @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @JsonProperty("name") val name: String,
-    @JsonProperty("sectorId") val sectorId: Int,
+    @JsonProperty("labelId") val labelId: Int,
 )

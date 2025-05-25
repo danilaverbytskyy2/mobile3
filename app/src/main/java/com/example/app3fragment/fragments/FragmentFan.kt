@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -14,14 +13,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -30,30 +26,29 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app3fragment.R
-import com.example.app3fragment.database.program.Program
+import com.example.app3fragment.database.fan.Fan
 import com.example.app3fragment.fragments.edit.FragmentProgramEdit
-import com.example.app3fragment.viewmodels.CompanyViewModel
-import com.example.app3fragment.viewmodels.ProgramViewModel
+import com.example.app3fragment.viewmodels.FanViewModel
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 
 private const val ARG_TITLE = "ARG_TITLE"
 private const val ARG_COMPANY_ID = "ARG_COMPANY_ID"
 
-class ProgramViewModelFactory(private val companyId: Int) : ViewModelProvider.Factory {
+class FanViewModelFactory(private val companyId: Int) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ProgramViewModel::class.java)) {
-            return ProgramViewModel(companyId) as T
+        if (modelClass.isAssignableFrom(FanViewModel::class.java)) {
+            return FanViewModel(companyId) as T
         }
         throw IllegalArgumentException("Error")
     }
 }
 
 class FragmentProgram : Fragment() {
-    private lateinit var adapter: ProgramAdapter;
+    private lateinit var adapter: FanAdapter;
     private var title: String? = null
     private var companyId: Int = -1
-    private lateinit var programViewModel: ProgramViewModel
+    private lateinit var fanViewModel: FanViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,8 +60,8 @@ class FragmentProgram : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = inflater.inflate(R.layout.fragment_programs, container, false)
-        val factory = ProgramViewModelFactory(this.companyId)
-        this.programViewModel = ViewModelProvider(this, factory)[ProgramViewModel::class.java]
+        val factory = FanViewModelFactory(this.companyId)
+        this.fanViewModel = ViewModelProvider(this, factory)[FanViewModel::class.java]
         return binding
     }
 
@@ -80,19 +75,19 @@ class FragmentProgram : Fragment() {
         activity.setSupportActionBar(toolbar)
         toolbarTitle.text = this.title
 
-        this.adapter = ProgramAdapter()
-        this.requireActivity().addMenuProvider(LocalMenuProvider(this.requireActivity(), companyId, this.adapter, activity, this.requireContext(), this.programViewModel), this.viewLifecycleOwner)
+        this.adapter = FanAdapter()
+        this.requireActivity().addMenuProvider(LocalMenuProvider(this.requireActivity(), companyId, this.adapter, activity, this.requireContext(), this.fanViewModel), this.viewLifecycleOwner)
 
         //============================================
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.programsView)
         recyclerView?.adapter = this.adapter
         recyclerView?.layoutManager = LinearLayoutManager(this.requireContext())
-        this.programViewModel.programs.observe(viewLifecycleOwner) { programs ->
+        this.fanViewModel.programs.observe(viewLifecycleOwner) { programs ->
             this.adapter.submitList(programs)
         }
 
-        this.programViewModel.fetch()
+        this.fanViewModel.fetch()
     }
 
     companion object {
@@ -106,7 +101,7 @@ class FragmentProgram : Fragment() {
             }
     }
 
-    class LocalMenuProvider(private val activityO: FragmentActivity, private val compId: Int, private val adapter: ProgramAdapter, private val activity: AppCompatActivity, private val context: Context, private val programViewModel: ProgramViewModel) :
+    class LocalMenuProvider(private val activityO: FragmentActivity, private val compId: Int, private val adapter: FanAdapter, private val activity: AppCompatActivity, private val context: Context, private val fanViewModel: FanViewModel) :
         MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
             menuInflater.inflate(R.menu.main_menu, menu)
@@ -123,9 +118,9 @@ class FragmentProgram : Fragment() {
                 }
                 R.id.menu_edit -> {
                     val selected = adapter.selectedPosition
-                    if (selected in adapter.programs.indices) {
-                        val prog = adapter.programs[selected]
-                        val fragment = FragmentProgramEdit.newInstance(prog.id, prog.companyId)
+                    if (selected in adapter.fans.indices) {
+                        val prog = adapter.fans[selected]
+                        val fragment = FragmentProgramEdit.newInstance(prog.id, prog.artistId)
                         activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).addToBackStack(null).commit()
                     } else {
                         Toast.makeText(context, "Choose an item", Toast.LENGTH_SHORT).show()
@@ -133,16 +128,16 @@ class FragmentProgram : Fragment() {
                     true
                 }
                 R.id.menu_delete -> {
-                    if (this.adapter.selectedPosition >= 0 && this.adapter.selectedPosition < this.adapter.programs.size) {
-                        programViewModel.removeProgram(this.adapter.programs[this.adapter.selectedPosition])
+                    if (this.adapter.selectedPosition >= 0 && this.adapter.selectedPosition < this.adapter.fans.size) {
+                        fanViewModel.removeFan(this.adapter.fans[this.adapter.selectedPosition])
                     }
                     true
                 }
                 R.id.menu_entry -> {
                     val selected = adapter.selectedPosition
-                    if (selected in adapter.programs.indices) {
-                        val prog = adapter.programs[selected]
-                        val fragment = FragmentProgramEdit.newInstance(prog.id, prog.companyId)
+                    if (selected in adapter.fans.indices) {
+                        val prog = adapter.fans[selected]
+                        val fragment = FragmentProgramEdit.newInstance(prog.id, prog.artistId)
                         activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).addToBackStack(null).commit()
                     } else {
                         Toast.makeText(context, "Choose an item", Toast.LENGTH_SHORT).show()
@@ -150,8 +145,8 @@ class FragmentProgram : Fragment() {
                     true
                 }
                 R.id.menu_phone -> {
-                    if (this.adapter.selectedPosition >= 0 && this.adapter.selectedPosition < this.adapter.programs.size) {
-                        val progr = this.adapter.programs[this.adapter.selectedPosition];
+                    if (this.adapter.selectedPosition >= 0 && this.adapter.selectedPosition < this.adapter.fans.size) {
+                        val progr = this.adapter.fans[this.adapter.selectedPosition];
                         if (!progr.developerPhone.isEmpty()) {
                             if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                                 makePhoneCall(progr.developerPhone)
@@ -173,13 +168,13 @@ class FragmentProgram : Fragment() {
         }
     }
 
-    class ProgramAdapter() : RecyclerView.Adapter<ProgramAdapter.ProgramViewHolder>() {
-        var programs = emptyList<Program>()
+    class FanAdapter() : RecyclerView.Adapter<FanAdapter.ProgramViewHolder>() {
+        var fans = emptyList<Fan>()
         var selectedPosition = -1
 
         @SuppressLint("NotifyDataSetChanged")
-        fun submitList(newList: List<Program>) {
-            this.programs = newList
+        fun submitList(newList: List<Fan>) {
+            this.fans = newList
             notifyDataSetChanged()
         }
 
@@ -203,7 +198,7 @@ class FragmentProgram : Fragment() {
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ProgramViewHolder, position: Int) {
-            val program = this.programs[position]
+            val program = this.fans[position]
             holder.nameText.text = "${program.id} - ${program.name}"
 
             holder.itemView.setBackgroundColor(
@@ -215,6 +210,6 @@ class FragmentProgram : Fragment() {
             )
         }
 
-        override fun getItemCount() = this.programs.size
+        override fun getItemCount() = this.fans.size
     }
 }
