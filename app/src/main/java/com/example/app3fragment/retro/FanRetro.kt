@@ -10,7 +10,7 @@ import retrofit2.http.Path
 
 interface FanRetro {
     @GET("fans/by-fan/{fanId}")
-    suspend fun getProgramById(@Path("programId") fanId: Int): Fan
+    suspend fun getFanById(@Path("fanId") fanId: Int): Fan
 
     @GET("fans/by-artist/{artistId}")
     suspend fun getFansByArtist(@Path("artistId") artistId: Int): List<Fan>

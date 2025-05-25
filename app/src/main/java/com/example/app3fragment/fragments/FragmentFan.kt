@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app3fragment.R
 import com.example.app3fragment.database.fan.Fan
-import com.example.app3fragment.fragments.edit.FragmentProgramEdit
+import com.example.app3fragment.fragments.edit.FanProgramEdit
 import com.example.app3fragment.viewmodels.FanViewModel
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
@@ -112,7 +112,7 @@ class FragmentProgram : Fragment() {
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
             return when (menuItem.itemId) {
                 R.id.menu_add -> {
-                    val fragment = FragmentProgramEdit.newInstance(-1, companyId = compId)
+                    val fragment = FanProgramEdit.newInstance(-1, companyId = compId)
                     activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).addToBackStack(null).commit()
                     true
                 }
@@ -120,7 +120,7 @@ class FragmentProgram : Fragment() {
                     val selected = adapter.selectedPosition
                     if (selected in adapter.fans.indices) {
                         val prog = adapter.fans[selected]
-                        val fragment = FragmentProgramEdit.newInstance(prog.id, prog.artistId)
+                        val fragment = FanProgramEdit.newInstance(prog.id, prog.artistId)
                         activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).addToBackStack(null).commit()
                     } else {
                         Toast.makeText(context, "Choose an item", Toast.LENGTH_SHORT).show()
@@ -137,7 +137,7 @@ class FragmentProgram : Fragment() {
                     val selected = adapter.selectedPosition
                     if (selected in adapter.fans.indices) {
                         val prog = adapter.fans[selected]
-                        val fragment = FragmentProgramEdit.newInstance(prog.id, prog.artistId)
+                        val fragment = FanProgramEdit.newInstance(prog.id, prog.artistId)
                         activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView2, fragment).addToBackStack(null).commit()
                     } else {
                         Toast.makeText(context, "Choose an item", Toast.LENGTH_SHORT).show()

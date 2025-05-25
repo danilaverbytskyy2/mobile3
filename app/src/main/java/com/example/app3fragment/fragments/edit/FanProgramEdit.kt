@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 private const val ARG_EDIT_ID = "ARG_EDIT_ID"
 private const val ARG_COMPANY_ID = "ARG_COMPANY_ID"
 
-class FragmentProgramEdit : Fragment() {
+class FanProgramEdit : Fragment() {
     private var editId: Int = -1
     private var companyId: Int = -1
     private lateinit var programEditViewModel: ProgramEditViewModel
@@ -44,7 +44,7 @@ class FragmentProgramEdit : Fragment() {
 
     private suspend fun loadAndFillProgramData(programId: Int, nameInput: EditText, descInput: EditText, phoneInput: EditText) {
         try {
-            val program = RetroBase.RFIT_PROGRAM.getProgramById(programId)
+            val program = RetroBase.RFIT_PROGRAM.getFanById(programId)
             withContext(Dispatchers.Main) {
                 program.let {
                     nameInput.setText(it.name)
@@ -117,7 +117,7 @@ class FragmentProgramEdit : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(editId: Int, companyId: Int) =
-            FragmentProgramEdit().apply {
+            FanProgramEdit().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_EDIT_ID, editId)
                     putInt(ARG_COMPANY_ID, companyId)
