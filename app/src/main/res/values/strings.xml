@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">App3Fragment</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ItemAdd">Add New</string>
+    <string name="ItemEdit">Edit</string>
+    <string name="ItemDelete">Delete</string>
+    <string name="Entry">Entry</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Program">Program</string>
+
+    <string name="Fl_Name">Name</string>
+    <string name="Fl_Desc">Description</string>
+    <string name="Fl_phone">Phone</string>
+</resources>

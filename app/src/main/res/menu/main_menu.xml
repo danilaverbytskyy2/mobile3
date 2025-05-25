@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_add" android:title="@string/ItemAdd" />
+    <item android:id="@+id/menu_edit" android:title="@string/ItemEdit" />
+    <item android:id="@+id/menu_delete" android:title="@string/ItemDelete" />
+    <item android:id="@+id/menu_entry" android:title="@string/Entry" />
+    <item android:id="@+id/menu_phone" android:title="@string/Fl_phone" />
+</menu>
